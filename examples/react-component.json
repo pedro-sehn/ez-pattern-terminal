@@ -1,0 +1,31 @@
+{
+  "id": "react-component",
+  "name": "React Component",
+  "description": "Folder + component + index barrel + optional test and styles",
+  "rootFolder": "{{name | pascal}}",
+  "variables": [
+    {
+      "name": "name",
+      "label": "Component name",
+      "type": "string",
+      "description": "e.g. user-card, UserCard",
+      "pattern": "^[A-Za-z][A-Za-z0-9-_ ]*$",
+      "patternError": "Start with a letter; letters, digits, spaces, - and _ only"
+    },
+    { "name": "withTest", "label": "Add a test file?", "type": "boolean", "default": true },
+    { "name": "withStyles", "label": "Add a CSS module?", "type": "boolean", "default": false }
+  ],
+  "files": [
+    {
+      "path": "{{name | pascal}}.tsx",
+      "content": "{{#if withStyles}}import styles from './{{name | pascal}}.module.css';\n\n{{/if}}type {{name | pascal}}Props = {\n  children?: React.ReactNode;\n};\n\nexport default function {{name | pascal}}({ children }: {{name | pascal}}Props) {\n  return <div{{#if withStyles}} className={styles.root}{{/if}}>{children}</div>;\n}\n"
+    },
+    { "path": "index.ts", "content": "export { default } from './{{name | pascal}}';\n" },
+    {
+      "path": "{{name | pascal}}.test.tsx",
+      "when": "withTest",
+      "content": "import { render, screen } from '@testing-library/react';\nimport {{name | pascal}} from './{{name | pascal}}';\n\ndescribe('{{name | pascal}}', () => {\n  it('renders its children', () => {\n    render(<{{name | pascal}}>hello</{{name | pascal}}>);\n    expect(screen.getByText('hello')).toBeInTheDocument();\n  });\n});\n"
+    },
+    { "path": "{{name | pascal}}.module.css", "when": "withStyles", "content": ".root {\n  display: flex;\n}\n" }
+  ]
+}

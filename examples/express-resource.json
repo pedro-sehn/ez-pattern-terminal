@@ -1,0 +1,25 @@
+{
+  "id": "express-resource",
+  "name": "Express Resource",
+  "description": "Controller + service + routes + types for a REST resource",
+  "rootFolder": "{{name | kebab}}",
+  "variables": [
+    { "name": "name", "label": "Resource name (singular)", "type": "string", "description": "e.g. invoice" },
+    { "name": "db", "label": "Persistence layer", "type": "choice", "options": ["prisma", "mongoose", "none"], "default": "prisma" }
+  ],
+  "files": [
+    {
+      "path": "{{name | kebab}}.routes.ts",
+      "content": "import { Router } from 'express';\nimport * as controller from './{{name | kebab}}.controller';\n\nexport const {{name | camel}}Router = Router();\n\n{{name | camel}}Router.get('/', controller.list);\n{{name | camel}}Router.get('/:id', controller.getById);\n{{name | camel}}Router.post('/', controller.create);\n"
+    },
+    {
+      "path": "{{name | kebab}}.controller.ts",
+      "content": "import type { Request, Response } from 'express';\nimport * as service from './{{name | kebab}}.service';\n\nexport async function list(_req: Request, res: Response) {\n  res.json(await service.findAll());\n}\n\nexport async function getById(req: Request, res: Response) {\n  const found = await service.findById(req.params.id);\n  if (!found) return res.status(404).json({ message: '{{name | title}} not found' });\n  res.json(found);\n}\n\nexport async function create(req: Request, res: Response) {\n  res.status(201).json(await service.create(req.body));\n}\n"
+    },
+    {
+      "path": "{{name | kebab}}.service.ts",
+      "content": "{{#if db}}// persistence: {{db}}\n{{/if}}import type { {{name | pascal}} } from './{{name | kebab}}.types';\n\nexport async function findAll(): Promise<{{name | pascal}}[]> {\n  throw new Error('not implemented');\n}\n\nexport async function findById(id: string): Promise<{{name | pascal}} | null> {\n  throw new Error('not implemented');\n}\n\nexport async function create(input: Omit<{{name | pascal}}, 'id'>): Promise<{{name | pascal}}> {\n  throw new Error('not implemented');\n}\n"
+    },
+    { "path": "{{name | kebab}}.types.ts", "content": "export interface {{name | pascal}} {\n  id: string;\n}\n" }
+  ]
+}
