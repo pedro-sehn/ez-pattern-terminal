@@ -2,7 +2,7 @@
 
 Design a file or folder pattern once, then scaffold it anywhere from the terminal.
 
-`ezplate` reads the same JSON format as [easy-pattern](../easy-pattern), so patterns can move between the VS Code extension and this CLI.
+`ezplate` reads the same JSON format as [easy-pattern](https://github.com/pedro-sehn/easy-pattern), so patterns can move between the VS Code extension and this CLI.
 
 ## Quick Start
 
